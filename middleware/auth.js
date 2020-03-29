@@ -8,7 +8,7 @@ function auth(req,res,next){
 
     try{
         const decoded = jwt.verify(token,config.get('jwtPrivateKey'));
-        req.user_id = decoded; //Getting decoded payload from jwt
+        req.user_id = decoded; 
         next();
 
     }catch(ex){
