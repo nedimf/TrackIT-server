@@ -1,9 +1,42 @@
-const {User,validate,validateUserUpdate,validateUserPassword} = require('../../models/user');
+const {User,validate} = require('../../models/user');
 const bcrypt = require('bcryptjs')
 const express = require('express');
+const auth = require('../../middleware/auth')
+
 const router = express.Router();
 
-router.get("/me", async(req,res) => {
+router.put("/syncing",auth,async(req,res) => {
+
+  const id = req.user_id._id
+  const user = await User.findById(id)
+
+  const scanned_devices = req.body.scanned_devices
+  const user_generated_services  = req.body.user_generated_services
+
+  if (!user_generated_services.length < 1) {
+
+    user_generated_services.forEach(element =>
+      user.user_generated_services.push(element)
+    )
+
+  }else{
+    res.status(401).json({"syncing":"failed","message":"User peripherals count must be greater than 1!"})
+  }
+
+  if (!scanned_devices.length < 1) {
+
+    scanned_devices.forEach(element =>
+      user.scanned_devices.push(element)
+    )
+
+  }else{
+    res.status(401).json({"syncing":"failed","message":"Scanning devies count must be greater than 1!"})
+  }
+
+  await user.save()
+
+  res.status(200).json({"syncing":"done"})
+
 
 })
 
@@ -13,7 +46,10 @@ router.post('/signup',async(req,res)=>{
     const {error} = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    let user = await User.findOne({id: req.body.user_id});
+    const salt = await bcrypt.genSalt(16);
+
+
+    let user = await User.findOne({user_id: salt });
     if(user) return res.status(400).send("Error:User is already signup.");
 
 
@@ -22,8 +58,6 @@ router.post('/signup',async(req,res)=>{
         scanned_devices: req.body.scanned_devices
     });
 
-    //Hashing password
-    const salt = await bcrypt.genSalt(16);
     user.user_id = salt
 
 
@@ -36,6 +70,8 @@ router.post('/signup',async(req,res)=>{
     res.json("Success: User signup successfuly.");
 
     console.log(user)
+
+
 });
 
 module.exports = router;
