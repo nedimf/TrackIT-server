@@ -13,24 +13,17 @@ router.put("/syncing",auth,async(req,res) => {
   const scanned_devices = req.body.scanned_devices
   const user_generated_services  = req.body.user_generated_services
 
-  if (!user_generated_services.length < 1) {
+  if (!scanned_devices.length < 1 || !user_generated_services.length < 1) {
 
     user_generated_services.forEach(element =>
       user.user_generated_services.push(element)
     )
-
-  }else{
-    res.status(401).json({"syncing":"failed","message":"User peripherals count must be greater than 1!"})
-  }
-
-  if (!scanned_devices.length < 1) {
-
     scanned_devices.forEach(element =>
       user.scanned_devices.push(element)
     )
 
   }else{
-    res.status(401).json({"syncing":"failed","message":"Scanning devies count must be greater than 1!"})
+    res.status(401).json({"syncing":"failed","message":"Data count must be greater than 1!"})
   }
 
   await user.save()
@@ -46,7 +39,7 @@ router.post('/signup',async(req,res)=>{
     const {error} = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const salt = await bcrypt.genSalt(16);
+    const generatedID = await bcrypt.genSalt(16);
 
 
     let user = await User.findOne({user_id: salt });
@@ -58,13 +51,10 @@ router.post('/signup',async(req,res)=>{
         scanned_devices: req.body.scanned_devices
     });
 
-    user.user_id = salt
+    user.user_id = generatedID
 
-
-    //Saving user
     await user.save();
 
-    //Generate auth token for user
     const token = user.generateAuthToken();
     res.header('x-auth-token',token);
     res.json("Success: User signup successfuly.");
