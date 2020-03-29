@@ -1,0 +1,22 @@
+{
+  "name": "trackit-server",
+  "version": "0.0.1",
+  "description": "TrackIT server is repository built as support server for mobile application TrackIT",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "nedimf",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^4.0.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "config": "^3.3.1",
+    "express": "^4.17.1",
+    "joi": "^14.3.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.6",
+    "nodemon": "^2.0.2"
+  }
+}
