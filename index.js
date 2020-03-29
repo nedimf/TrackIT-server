@@ -12,7 +12,8 @@ app.get("/",(req,res)=>{
 })
 
 
-if (config.get("jwtPrivateKey")){
+
+if (!config.get("jwtPrivateKey")){
   console.error("FATAL ERROR: jwtPrivateKey key is not defined");
   process.exit(0)
 }
