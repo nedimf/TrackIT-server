@@ -17,7 +17,14 @@ const userSchema = new mongoose.Schema({
     },
     user_generated_services:[{
       type:String
-    }]
+    }],
+    scanned_devices: [{
+       name: String,
+       rssi:String,
+       date:String,
+       uuid:String,
+       values: mongoose.Schema.Types.Mixed
+   }]
 
 
 
@@ -34,7 +41,8 @@ const User = mongoose.model('User',userSchema);
 function validateUser(User){
         const schema = {
             user_id: joi.string().min(2).max(50).required(),
-            user_generated_services: joi.required()
+            user_generated_services: joi.required(),
+            scanned_devices: joi.required()
         };
 
         return joi.validate(User,schema);

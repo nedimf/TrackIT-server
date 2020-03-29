@@ -18,7 +18,8 @@ router.post('/signup',async(req,res)=>{
 
 
     user = new User({
-        user_generated_services: req.body.user_generated_services
+        user_generated_services: req.body.user_generated_services,
+        scanned_devices: req.body.scanned_devices
     });
 
     //Hashing password
@@ -33,6 +34,8 @@ router.post('/signup',async(req,res)=>{
     const token = user.generateAuthToken();
     res.header('x-auth-token',token);
     res.json("Success: User signup successfuly.");
+
+    console.log(user)
 });
 
 module.exports = router;
