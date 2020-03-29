@@ -4,18 +4,24 @@ const auth = require('./auth');
 
 function autharization(req,res,next){
 
-    const user_id = req.params.userId;
-    const token_decoded_user_id = req.user_id;
+  const token = req.header('x-auth-token');
+  if(!token) return res.status(401).send('Access deneid.No token  provided.');
 
-    if(token_decoded_user_id._id == user_id){
+  try{
+      const decoded = jwt.verify(token,config.get('jwtPrivateKey'));
+      req.user_id = decoded;
 
-        res.status(200);
-        next();
-    }else{
-        res.status(403);
-        res.json({Status: " Access forbiden"});
+      if(decoded.admin){
+         next()
+      }else{
+        res.status(400).send('Access forbidden.');
 
-    }
+      }
+
+  }catch(ex){
+      res.status(400).send('Invalide token.');
+  }
+
 }
 
 module.exports = autharization;

@@ -1,7 +1,8 @@
-const {User,validate} = require('../../models/user');
+const {User,Admin,validate,validateAdmin} = require('../../models/user');
 const bcrypt = require('bcryptjs')
 const express = require('express');
 const auth = require('../../middleware/auth')
+const authorization = require('../../middleware/authorization')
 
 const router = express.Router();
 
@@ -63,5 +64,64 @@ router.post('/signup',async(req,res)=>{
 
 
 });
+
+
+router.post('/admin',async(req,res)=>{
+
+    const {error} = validateAdmin(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    let user = await Admin.findOne({username: req.body.username});
+    if(user) return res.status(400).send("Error:Admin with that name is already singup.");
+
+
+    user = new Admin({
+
+      username:req.body.username,
+      password:req.body.password
+
+    });
+
+    const salt = await bcrypt.genSalt(12);
+    user.password = await bcrypt.hash(user.password,salt);
+
+    await user.save();
+
+    const token = user.generateAuthToken();
+    res.header('x-auth-token',token);
+    res.json("Success: Admin signup successfuly.");
+
+    console.log(user)
+
+
+});
+
+router.post('/infected',auth,authorization,async(req,res)=>{
+
+  const adminID = req.user_id._id
+  const infectedID = req.body.infected
+
+
+  const user = await User.findById(infectedID)
+  const admin = await Admin.findById(adminID)
+
+  console.log(admin);
+  user.infected = true
+
+  const infectedArray = []
+  infectedArray.push(infectedID)
+
+  infectedArray.forEach(element =>
+    admin.assingedInfections.push(element)
+  )
+
+
+  await user.save()
+  await admin.save()
+
+  res.status(200).json({"Infection recorded":"true"})
+
+})
+
 
 module.exports = router;
