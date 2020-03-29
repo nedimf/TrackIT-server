@@ -13,7 +13,7 @@ router.put("/syncing",auth,async(req,res) => {
   const scanned_devices = req.body.scanned_devices
   const user_generated_services  = req.body.user_generated_services
 
-  if (!scanned_devices.length < 1 || !user_generated_services.length < 1) {
+  if (!scanned_devices.length < 1 && !user_generated_services.length < 1) {
 
     user_generated_services.forEach(element =>
       user.user_generated_services.push(element)
@@ -42,7 +42,7 @@ router.post('/signup',async(req,res)=>{
     const generatedID = await bcrypt.genSalt(16);
 
 
-    let user = await User.findOne({user_id: salt });
+    let user = await User.findOne({user_id: generatedID });
     if(user) return res.status(400).send("Error:User is already signup.");
 
 
