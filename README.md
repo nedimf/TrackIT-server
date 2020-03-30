@@ -1,6 +1,6 @@
 # TrackIT-server
 
-TrackIT-server is Node API built for soly to communicate with TrackIT mobile app (Android & iOS).
+TrackIT-server is Node API built soly to communicate with TrackIT mobile app (Android & iOS).
 
 ### Server functions
 TrackIT-server is built having two main features in mind:
@@ -23,8 +23,6 @@ API was built using :
 - Node 
 - MongoDB 
 - node_modules
-
-## Buy us a coffe
 
 ## Buy us coffee
 
