@@ -1,5 +1,8 @@
 # TrackIT-server
 
+**Google and Apple decided to make almost the same thing, so this project is archived.**
+
+
 TrackIT-server is Node API built soly to communicate with TrackIT mobile app (Android & iOS).
 
 ### Server functions
